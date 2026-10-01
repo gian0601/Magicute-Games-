@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magicute Games 🦄✨</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #ffb6e6, #c9b6ff, #aeefff);
+  min-height: 100vh;
+  color: #5b3b69;
+  text-align: center;
+}
+
+.screen {
+  display: none;
+  min-height: 100vh;
+  padding: 35px 18px;
+}
+
+.active {
+  display: block;
+}
+
+h1 {
+  font-size: 42px;
+  margin-bottom: 10px;
+}
+
+h2 {
+  font-size: 30px;
+}
+
+p {
+  font-size: 18px;
+}
+
+.logo {
+  font-size: 55px;
+  margin-top: 20px;
+}
+
+.subtitle {
+  font-size: 20px;
+  margin-bottom: 30px;
+}
+
+.cards {
+  display: grid;
+  gap: 18px;
+  max-width: 600px;
+  margin: auto;
+}
+
+.card {
+  border: none;
+  border-radius: 25px;
+  padding: 25px;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  background: rgba(255,255,255,0.75);
+  box-shadow: 0 8px 20px rgba(100,50,120,0.2);
+}
+
+.card:hover {
+  transform: scale(1.03);
+}
+
+button {
+  border: none;
+  border-radius: 20px;
+  padding: 14px 24px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 8px;
+  background: white;
+  color: #704b82;
+  box-shadow: 0 5px 12px rgba(80,40,100,0.2);
+}
+
+.back {
+  background: #ffffffaa;
+}
+
+canvas {
+  background: white;
+  border-radius: 20px;
+  border: 4px solid #ff8bd1;
+  max-width: 100%;
+  touch-action: none;
+}
+
+.word {
+  font-size: 32px;
+  font-weight: bold;
+  background: white;
+  padding: 15px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.game-area {
+  max-width: 700px;
+  margin: auto;
+}
+
+.runner {
+  position: relative;
+  height: 300px;
+  max-width: 650px;
+  margin: 20px auto;
+  background: linear-gradient(#b9f2ff, #fff1fa);
+  border-radius: 25px;
+  overflow: hidden;
+  border: 4px solid white;
+}
+
+.character {
+  position: absolute;
+  font-size: 55px;
+  bottom: 30px;
+  left: 70px;
+}
+
+.obstacle {
+  position: absolute;
+  font-size: 50px;
+  bottom: 30px;
+  right: -70px;
+}
+
+.customer {
+  font-size: 70px;
+}
+
+.desserts {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.dessert {
+  font-size: 45px;
+  padding: 15px;
+}
+
+.compliment-box {
+  background: rgba(255,255,255,0.8);
+  border-radius: 30px;
+  padding: 35px 20px;
+  max-width: 600px;
+  margin: 30px auto;
+  font-size: 25px;
+}
+
+#message {
+  min-height: 35px;
+  font-weight: bold;
+}
+
+.music {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  padding: 10px 15px;
+  font-size: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<button class="music" onclick="toggleMusic()">🔊 Music</button>
+
+<!-- HOME -->
+<section id="home" class="screen active">
+  <div class="logo">🦄✨🎀✨🦄</div>
+
+  <h1>Magicute Games</h1>
+
+  <p class="subtitle">
+    A magical little world full of games, rainbows and cuteness! 💗
+  </p>
+
+  <div class="cards">
+
+    <button class="card" onclick="showScreen('draw')">
+      🎨🖌️<br>
+      Draw it!
+      <br>
+      <small>Draw the secret word!</small>
+    </button>
+
+    <button class="card" onclick="showScreen('unirun')">
+      🌈🦄<br>
+      UniRun
+      <br>
+      <small>Help the unicorn run!</small>
+    </button>
+
+    <button class="card" onclick="showScreen('dessert')">
+      🍨🐾<br>
+      Dessert Pawradise
+      <br>
+      <small>Make the perfect dessert!</small>
+    </button>
+
+    <button class="card" onclick="showScreen('compliment')">
+      😻✨💐<br>
+      Compliment
+      <br>
+      <small>Get a cute little compliment!</small>
+    </button>
+
+  </div>
+</section>
+
+
+<!-- DRAW GAME -->
+<section id="draw" class="screen">
+  <div class="game-area">
+
+    <h2>🎨🖌️ Draw it!</h2>
+
+    <p>Draw this:</p>
+
+    <div class="word" id="drawWord">🍎 Apple</div>
+
+    <br><br>
+
+    <canvas id="drawingCanvas" width="600" height="400"></canvas>
+
+    <br>
+
+    <button onclick="clearCanvas()">🧹 Clear</button>
+    <button onclick="finishDrawing()">🌈 Finish!</button>
+    <button class="back" onclick="showScreen('home')">🏠 Home</button>
+
+    <p id="drawResult"></p>
+
+  </div>
+</section>
+
+
+<!-- UNIRUN -->
+<section id="unirun" class="screen">
+
+  <h2>🌈🦄 UniRun</h2>
+
+  <p>Tap JUMP and help the unicorn avoid the rainbows!</p>
+
+  <div class="runner" id="runner">
+
+    <div class="character" id="unicorn">🦄</div>
+
+    <div class="obstacle" id="rainbow">🌈</div>
+
+  </div>
+
+  <h3>Score: <span id="runScore">0</span></h3>
+
+  <button onclick="jump()">⬆️ JUMP</button>
+  <button onclick="startRun()">▶️ Start</button>
+  <button class="back" onclick="showScreen('home')">🏠 Home</button>
+
+  <p id="runMessage"></p>
+
+</section>
+
+
+<!-- DESSERT GAME -->
+<section id="dessert" class="screen">
+
+  <h2>🍨🐾 Dessert Pawradise</h2>
+
+  <div class="game-area">
+
+    <div class="customer" id="animal">🐰</div>
+
+    <p id="request">
+      The customer wants...
+    </p>
+
+    <button onclick="startDessert()">🍰 New customer</button>
+
+    <div id="dessertChoices" class="desserts"></div>
+
+    <button onclick="giveDessert()">💝 Give!</button>
+
+    <p id="dessertMessage"></p>
+
+  </div>
+
+  <button class="back" onclick="showScreen('home')">🏠 Home</button>
+
+</section>
+
+
+<!-- COMPLIMENT -->
+<section id="compliment" class="screen">
+
+  <div class="logo">😻✨💐</div>
+
+  <h2>Pretty Compliment Corner</h2>
+
+  <div class="compliment-box" id="complimentText">
+    Click the button for a cute compliment! 💗
+  </div>
+
+  <button onclick="newCompliment()">💐 Give me one!</button>
+
+  <br>
+
+  <button class="back" onclick="showScreen('home')">🏠 Home</button>
+
+</section>
+
+
+<script>
+
+/* SCREEN NAVIGATION */
+
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(screen => {
+    screen.classList.remove("active");
+  });
+
+  document.getElementById(id).classList.add("active");
+
+  clickSound();
+}
+
+
+/* SOUND */
+
+let audioContext;
+let musicOn = false;
+let musicTimer;
+
+function sound(frequency, duration) {
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+
+  const oscillator = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+
+  oscillator.frequency.value = frequency;
+  oscillator.connect(gain);
+  gain.connect(audioContext.destination);
+
+  gain.gain.setValueAtTime(0.05, audioContext.currentTime);
+  gain.gain.exponentialRampToValueAtTime(
+    0.001,
+    audioContext.currentTime + duration
+  );
+
+  oscillator.start();
+  oscillator.stop(audioContext.currentTime + duration);
+}
+
+function clickSound() {
+  sound(700, 0.08);
+}
+
+function toggleMusic() {
+
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+
+  musicOn = !musicOn;
+
+  if (musicOn) {
+
+    document.querySelector(".music").textContent = "🔇 Mute";
+
+    musicTimer = setInterval(() => {
+      sound(330, 0.25);
+      setTimeout(() => sound(440, 0.25), 250);
+    }, 900);
+
+  } else {
+
+    document.querySelector(".music").textContent = "🔊 Music";
+    clearInterval(musicTimer);
+
+  }
+}
+
+
+/* DRAW GAME */
+
+const canvas = document.getElementById("drawingCanvas");
+const ctx = canvas.getContext("2d");
+
+let drawing = false;
+
+canvas.addEventListener("pointerdown", startDrawing);
+canvas.addEventListener("pointermove", draw);
+canvas.addEventListener("pointerup", stopDrawing);
+canvas.addEventListener("pointerleave", stopDrawing);
+
+function startDrawing(e) {
+  drawing = true;
+  ctx.beginPath();
+  ctx.moveTo(e.offsetX, e.offsetY);
+}
+
+function draw(e) {
+  if (!drawing) return;
+
+  ctx.lineWidth = 5;
+  ctx.lineCap = "round";
+  ctx.strokeStyle = "#ff69c7";
+
+  ctx.lineTo(e.offsetX, e.offsetY);
+  ctx.stroke();
+}
+
+function stopDrawing() {
+  drawing = false;
+}
+
+function clearCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  document.getElementById("drawResult").textContent = "";
+}
+
+const drawingWords = [
+  "🍎 Apple",
+  "🌸 Flower",
+  "🐱 Cat",
+  "🍓 Strawberry",
+  "🦋 Butterfly",
+  "🍦 Ice cream",
+  "🌈 Rainbow",
+  "🐰 Bunny"
+];
+
+function finishDrawing() {
+
+  const score = Math.floor(Math.random() * 51) + 50;
+
+  document.getElementById("drawResult").innerHTML =
+    "🎉 Hurray! Your score is <strong>" + score + "/100</strong>! ✨";
+
+  sound(880, 0.2);
+}
+
+
+/* UNIRUN */
+
+let runInterval;
+let score = 0;
+let jumping = false;
+
+function startRun() {
+
+  clearInterval(runInterval);
+
+  score = 0;
+  document.getElementById("runScore").textContent = score;
+  document.getElementById("runMessage").textContent = "";
+
+  const rainbow = document.getElementById("rainbow");
+
+  let position = 650;
+
+  runInterval = setInterval(() => {
+
+    position -= 7;
+
+    if (position < -70) {
+      position = 650;
+      score++;
+      document.getElementById("runScore").textContent = score;
+    }
+
+    rainbow.style.left = position + "px";
+    rainbow.style.right = "auto";
+
+  }, 40);
+}
+
+function jump() {
+
+  if (jumping) return;
+
+  jumping = true;
+
+  const unicorn = document.getElementById("unicorn");
+
+  unicorn.style.bottom = "150px";
+
+  sound(600, 0.12);
+
+  setTimeout(() => {
+
+    unicorn.style.bottom = "30px";
+    jumping = false;
+
+  }, 500);
+}
+
+
+/* DESSERT GAME */
+
+const desserts = [
+  "🍦",
+  "🍰",
+  "🧁",
+  "🍨",
+  "🍩",
+  "🍪"
+];
+
+let requestedDesserts = [];
+let selectedDesserts = [];
+
+function startDessert() {
+
+  selectedDesserts = [];
+
+  const animals = ["🐰", "🐱", "🐶", "🐼", "🐹"];
+
+  document.getElementById("animal").textContent =
+    animals[Math.floor(Math.random() * animals.length)];
+
+  requestedDesserts = [];
+
+  const amount = Math.floor(Math.random() * 3) + 1;
+
+  while (requestedDesserts.length < amount) {
+
+    const dessert =
+      desserts[Math.floor(Math.random() * desserts.length)];
+
+    if (!requestedDesserts.includes(dessert)) {
+      requestedDesserts.push(dessert);
+    }
+  }
+
+  document.getElementById("request").textContent =
+    "Remember: " + requestedDesserts.join(" ");
+
+  document.getElementById("dessertChoices").innerHTML = "";
+
+  desserts.forEach(dessert => {
+
+    const button = document.createElement("button");
+
+    button.className = "dessert";
+    button.textContent = dessert;
+
+    button.onclick = () => {
+
+      if (!selectedDesserts.includes(dessert)) {
+        selectedDesserts.push(dessert);
+        button.style.transform = "scale(1.2)";
+      }
+
+    };
+
+    document.getElementById("dessertChoices").appendChild(button);
+
+  });
+
+  setTimeout(() => {
+
+    document.getElementById("request").textContent =
+      "The customer is waiting... 👀";
+
+  }, 3000);
+}
+
+function giveDessert() {
+
+  const correct =
+    selectedDesserts.length === requestedDesserts.length &&
+    selectedDesserts.every(item =>
+      requestedDesserts.includes(item)
+    );
+
+  if (correct) {
+
+    document.getElementById("dessertMessage").innerHTML =
+      "🥹💗 YAY! The customer is happy! Thank u bae ✨";
+
+    document.getElementById("animal").textContent += " 💕";
+
+    sound(880, 0.2);
+
+  } else {
+
+    document.getElementById("dessertMessage").innerHTML =
+      "😭 Girl you got it wronggg! Try again 💅✨";
+
+  }
+}
+
+
+/* COMPLIMENTS */
+
+const compliments = [
+  "You are literally a ray of sunshine ☀️💗",
+  "Your creativity is magical 🎨✨",
+  "You make ordinary things feel special 🌸",
+  "You have such a beautiful imagination 🦄💫",
+  "Keep being your amazing self 💐💗",
+  "You deserve all the sparkles today ✨🎀",
+  "Your energy is absolutely adorable 😻💖"
+];
+
+function newCompliment() {
+
+  const random =
+    compliments[Math.floor(Math.random() * compliments.length)];
+
+  document.getElementById("complimentText").textContent = random;
+
+  sound(800, 0.15);
+}
+
+
+/* RANDOM FIRST DRAWING WORD */
+
+document.getElementById("drawWord").textContent =
+  drawingWords[Math.floor(Math.random() * drawingWords.length)];
+
+</script>
+
+</body>
+</html>
